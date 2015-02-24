@@ -97,6 +97,7 @@
   <build>
     <!-- for hot reload of the web application-->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+    <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
