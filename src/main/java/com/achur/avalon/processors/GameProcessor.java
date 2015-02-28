@@ -4,6 +4,9 @@ import com.achur.avalon.entity.Game;
 
 import java.util.List;
 
+/**
+ * A GameProcessor handles game-level logic.
+ */
 public interface GameProcessor {
 
   /**

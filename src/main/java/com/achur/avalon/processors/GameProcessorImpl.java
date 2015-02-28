@@ -27,8 +27,8 @@ public class GameProcessorImpl implements GameProcessor {
    * {@inheritDoc}
    */
   public Game proposeTeam(Long gameId, Long proposerId, List<Long> playerIdList) {
-  }
     throw new UnsupportedOperationException();
+  }
 
   /**
    * {@inheritDoc}

@@ -5,6 +5,9 @@ import com.achur.avalon.entity.Player;
 
 import java.util.List;
 
+/**
+ * Handles logic for the Avalon lobby.
+ */
 public interface LobbyProcessor {
 
   /**
