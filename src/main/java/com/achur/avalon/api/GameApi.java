@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class GameApi extends AvalonApi {
 
-  @ApiMethod(name="game.list")
-  public List<Game> listGames(@Named("param") String param) {
-    System.out.println(param);
+  @ApiMethod(name="game.join", path="game/join")
+  public List<Game> listGames(@Named("id") Long id) {
+    System.out.println("JOINING GAME " + id);
     return ImmutableList.<Game>of();
   }
 

@@ -9,25 +9,31 @@ import lombok.Data;
  */
 @Entity
 @Data
-public class Game {
+public class Player {
+
+  public enum Role {
+    MERLIN,
+    SERVANT,
+    PERCIVAL,
+    ASSASSIN,
+    MINION,
+    MORDRED,
+    MORGANA
+  }
+
   /**
    * Synthetic ID (woo boilerplate)
    */
   @Id
   Long id;
 
-  public enum State {
-    START,
-    TEAM_SELECTION,
-    TEAM_VOTING,
-    QUEST,
-    END
-  }
+  /**
+   * The name of the player.
+   */
+  String name;
 
   /**
-   * The state of the game
+   * The role assigned to the player.
    */
-  State state;
-
-  Integer voteCount;
+  Role role;
 }

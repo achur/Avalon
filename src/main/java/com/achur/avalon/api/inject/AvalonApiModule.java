@@ -1,6 +1,7 @@
 package com.achur.avalon.api.inject;
 
 import com.achur.avalon.api.GameApi;
+import com.achur.avalon.api.LobbyApi;
 
 import com.google.api.server.spi.guice.GuiceSystemServiceServletModule;
 import com.google.common.collect.Sets;
@@ -19,7 +20,8 @@ public class AvalonApiModule extends GuiceSystemServiceServletModule {
     installModules();
 
     this.serveGuiceSystemServiceServlet("/_ah/spi/*", Sets.newHashSet(
-            GameApi.class
+            GameApi.class,
+            LobbyApi.class
         ));
   }
 
