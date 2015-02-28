@@ -17,10 +17,12 @@ public class Game {
   Long id;
 
   public enum State {
+    WAIT,
     START,
     TEAM_SELECTION,
     TEAM_VOTING,
     QUEST,
+    GUESS_MERLIN,
     END
   }
 
