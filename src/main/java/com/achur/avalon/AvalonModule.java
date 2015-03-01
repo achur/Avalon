@@ -1,6 +1,8 @@
 package com.achur.avalon;
 
 import com.achur.avalon.api.inject.AvalonApiModule;
+import com.achur.avalon.processors.inject.AvalonProcessorModule;
+import com.achur.avalon.storage.inject.AvalonStoreModule;
 
 import com.google.inject.AbstractModule;
 
@@ -13,5 +15,7 @@ public class AvalonModule extends AbstractModule {
   @Override
   protected void configure() {
     install(new AvalonApiModule());
+    install(new AvalonProcessorModule());
+    install(new AvalonStoreModule());
   }
 }

@@ -4,7 +4,7 @@ import com.achur.avalon.api.GameApi;
 import com.achur.avalon.api.LobbyApi;
 
 import com.google.api.server.spi.guice.GuiceSystemServiceServletModule;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -19,7 +19,7 @@ public class AvalonApiModule extends GuiceSystemServiceServletModule {
 
     installModules();
 
-    this.serveGuiceSystemServiceServlet("/_ah/spi/*", Sets.newHashSet(
+    this.serveGuiceSystemServiceServlet("/_ah/spi/*", ImmutableSet.of(
             GameApi.class,
             LobbyApi.class
         ));
