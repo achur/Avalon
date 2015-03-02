@@ -2,6 +2,7 @@ package com.achur.avalon.api;
 
 import com.achur.avalon.entity.Game;
 import com.achur.avalon.entity.Player;
+import com.achur.avalon.processors.LobbyProcessor;
 
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
@@ -15,6 +16,19 @@ import javax.annotation.Nullable;
  * Defines the API for lobby-level actions.
  */
 public class LobbyApi extends AvalonApi {
+
+  /**
+   * The Lobby Processor which handles the behind-the-scenes logic.
+   */
+  private LobbyProcessor lobbyProcessor;
+
+  /**
+   * Guice-injected constructor.
+   */
+  @Inject
+  LobbyApi(LobbyProcessor lobbyProcessor) {
+    this.lobbyProcessor = lobbyProcessor;
+  }
 
   /**
    * Lists the currently open games.
