@@ -23,7 +23,7 @@ public interface GameProcessor {
    * @param id The ID of the game to start.
    * @return The game object in its post-start state.
    */
-  public Game startVoting(Long id);
+  public Game startSelection(Long id);
 
   /**
    * Sets the current proposed team and moves into the team voting state.

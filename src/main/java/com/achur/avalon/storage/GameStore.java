@@ -7,4 +7,19 @@ import com.achur.avalon.entity.Game;
  */
 public interface GameStore {
 
+  /**
+   * Gets the game from the datastore.
+   *
+   * @param id The ID of the game.
+   * @return The game fetched from the datastore.
+   */
+  public Game getGame(Long id);
+
+  /**
+   * Persists the game to the datastore.
+   *
+   * @param game The game to persist.
+   * @return The game that was persisted.
+   */
+  public Game saveGame(Game game);
 }
