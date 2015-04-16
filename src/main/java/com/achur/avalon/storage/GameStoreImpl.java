@@ -2,6 +2,8 @@ package com.achur.avalon.storage;
 
 import com.achur.avalon.entity.Game;
 
+import com.google.common.base.Function;
+
 import java.util.HashMap;
 
 /**
@@ -26,4 +28,12 @@ public class GameStoreImpl implements GameStore {
     return game;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public Game modifyGame(Long id, Function<Game, Game> modifier) {
+    Game game = getGame(id);
+    game = modifier.apply(game);
+    return saveGame(game);
+  }
 }

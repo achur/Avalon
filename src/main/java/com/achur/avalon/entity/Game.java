@@ -64,14 +64,24 @@ public class Game {
   Long currentLeader;
 
   /**
-   * The current votes for.
+   * The current votes for the given team.
    */
-  List<Long> votesYay;
+  List<Long> teamVotesYay;
 
   /**
-   * The current votes against.
+   * The current votes against the given team.
    */
-  List<Long> votesNay;
+  List<Long> teamVotesNay;
+
+  /**
+   * The current votes for the given quest.
+   */
+  List<Long> questVotesYay;
+
+  /**
+   * The current votes against the given quest.
+   */
+  List<Long> questVotesNay;
 
   /**
    * Outcome of the game (true = good wins).

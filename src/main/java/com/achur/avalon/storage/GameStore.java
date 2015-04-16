@@ -2,6 +2,8 @@ package com.achur.avalon.storage;
 
 import com.achur.avalon.entity.Game;
 
+import com.google.common.base.Function;
+
 /**
  * Handles storing and updating {@link Game} objects.
  */
@@ -22,4 +24,14 @@ public interface GameStore {
    * @return The game that was persisted.
    */
   public Game saveGame(Game game);
+
+  /**
+   * Performs an atomic modification to a game.
+   *
+   * @param id The ID of the game to modify.
+   * @param modifier A function that modifies the Game which will be
+   *     executed atomically for each game.
+   * @return The modified game.
+   */
+  public Game modifyGame(Long id, Function<Game, Game> modifier);
 }

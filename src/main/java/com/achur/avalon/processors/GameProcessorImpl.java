@@ -5,6 +5,7 @@ import com.achur.avalon.entity.Player;
 import com.achur.avalon.storage.GameStore;
 import com.achur.avalon.storage.PlayerStore;
 
+import com.google.common.base.Function;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -16,18 +17,18 @@ public class GameProcessorImpl implements GameProcessor {
   /**
    * The Game Store service which handles persistance of Game objects.
    */
-  private GameStore gameStore;
+  private final GameStore gameStore;
 
   /**
    * The Player Store service which handles persistance of Player objects.
    */
-  private PlayerStore playerStore;
+  private final PlayerStore playerStore;
 
   /**
    * Guice-injected constructor.
    */
   @Inject
-  GameProcessorImpl(GameStore gameStore, PlayerStore playerStore) {
+  GameProcessorImpl(final GameStore gameStore, final PlayerStore playerStore) {
     this.gameStore = gameStore;
     this.playerStore = playerStore;
   }
@@ -37,11 +38,15 @@ public class GameProcessorImpl implements GameProcessor {
    * {@inheritDoc}
    */
   public Game startGame(Long id) {
-    Game game = gameStore.getGame(id);
-    assignPlayers(game);
-    game.setState(Game.State.START);
-    gameStore.saveGame(game);
-    return game;
+    Function<Game, Game> modifier = new Function<Game, Game>() {
+      @Override
+      public Game apply(Game game) {
+        assignPlayers(game);
+        game.setState(Game.State.START);
+        return game;
+      }
+    };
+    return gameStore.modifyGame(id, modifier);
   }
 
   /**
@@ -62,46 +67,65 @@ public class GameProcessorImpl implements GameProcessor {
    * {@inheritDoc}
    */
   public Game startSelection(Long id) {
-    Game game = gameStore.getGame(id);
-    game.setState(Game.State.TEAM_SELECTION);
-    gameStore.saveGame(game);
-    return game;
+    Function<Game, Game> modifier = new Function<Game, Game>() {
+      @Override
+      public Game apply(Game game) {
+        game.setState(Game.State.TEAM_SELECTION);
+        return game;
+      }
+    };
+    return gameStore.modifyGame(id, modifier);
   }
 
   /**
    * {@inheritDoc}
    */
-  public Game proposeTeam(Long gameId, Long proposerId, List<Long> playerIdList) {
-    Game game = gameStore.getGame(gameId);
+  public Game proposeTeam(Long gameId, final Long proposerId, final List<Long> playerIdList) {
+    Function<Game, Game> modifier = new Function<Game, Game>() {
+      @Override
+      public Game apply(Game game) {
+        // TODO(achur): Here and elsewhere, use something better than assert.
+        assert game.getState() == Game.State.TEAM_SELECTION : "Wrong state";
+        assert game.getCurrentLeader() == proposerId : "Wrong proposer";
 
-    // TODO(achur): Here and elsewhere, use something better than assert.
-    assert game.getState() == Game.State.TEAM_SELECTION : "Wrong state";
-    assert game.getCurrentLeader() == proposerId : "Wrong proposer";
+        // TODO(achur): Logic to determine if the right number of players is questing.
 
-    // TODO(achur): Logic to determine if the right number of players is questing.
-
-    game.setCurrentTeam(playerIdList);
-    game.setState(Game.State.TEAM_VOTING);
-    gameStore.saveGame(game);
-    return game;
+        game.setCurrentTeam(playerIdList);
+        clearTeamVotes(game);
+        game.setState(Game.State.TEAM_VOTING);
+        return game;
+      }
+    };
+    return gameStore.modifyGame(gameId, modifier);
   }
 
-  private void issueVote(Game game, Long voterId, Boolean approve) {
-    if (game.getVotesYay().contains(voterId)) {
+  private void clearTeamVotes(Game game) {
+    game.setTeamVotesYay(new ArrayList<Long>());
+    game.setTeamVotesNay(new ArrayList<Long>());
+  }
+
+  private void clearQuestVotes(Game game) {
+    game.setQuestVotesYay(new ArrayList<Long>());
+    game.setQuestVotesNay(new ArrayList<Long>());
+  }
+
+  private void issueVote(
+      List<Long> votesYay, List<Long> votesNay, Long voterId, Boolean approve) {
+    if (votesYay.contains(voterId)) {
       if (!approve) {
-        game.getVotesYay().remove(voterId);
-        game.getVotesNay().add(voterId);
+        votesYay.remove(voterId);
+        votesNay.add(voterId);
       }
-    } else if (game.getVotesNay().contains(voterId)) {
+    } else if (votesNay.contains(voterId)) {
       if (approve) {
-        game.getVotesNay().remove(voterId);
-        game.getVotesYay().add(voterId);
+        votesNay.remove(voterId);
+        votesYay.add(voterId);
       }
     } else {
       if (approve) {
-        game.getVotesYay().add(voterId);
+        votesYay.add(voterId);
       } else {
-        game.getVotesNay().add(voterId);
+        votesNay.add(voterId);
       }
     }
   }
@@ -132,31 +156,35 @@ public class GameProcessorImpl implements GameProcessor {
   /**
    * {@inheritDoc}
    */
-  public Game issueTeamVote(Long gameId, Long voterId, Boolean approve) {
-    Game game = gameStore.getGame(gameId);
+  public Game issueTeamVote(Long gameId, final Long voterId, final Boolean approve) {
+    Function<Game, Game> modifier = new Function<Game, Game>() {
+      @Override
+      public Game apply(Game game) {
+        assert game.getState() == Game.State.TEAM_VOTING : "Wrong state";
 
-    assert game.getState() == Game.State.TEAM_VOTING : "Wrong state";
+        issueVote(game.getTeamVotesYay(), game.getTeamVotesNay(), voterId, approve);
 
-    issueVote(game, voterId, approve);
-
-    // If all votes are in, check if we're going questing.
-    if (game.getVotesYay().size() + game.getVotesNay().size() ==
-        game.getPlayers().size()) {
-      if (game.getVotesYay().size() > game.getVotesNay().size()) {
-        game.setState(Game.State.QUEST);
-      } else {
-        game.setVoteCount(game.getVoteCount() + 1);
-        if (game.getVoteCount() >= Constants.MAX_VOTES) {
-          game.setOutcome(false);
-          game.setState(Game.State.END);
-        } else {
-          game.setCurrentLeader(getNextLeader(game));
-          game.setState(Game.State.TEAM_SELECTION);
+        // If all votes are in, check if we're going questing.
+        if (game.getTeamVotesYay().size() + game.getTeamVotesNay().size() ==
+            game.getPlayers().size()) {
+          if (game.getTeamVotesYay().size() > game.getTeamVotesNay().size()) {
+            game.setState(Game.State.QUEST);
+            clearQuestVotes(game);
+          } else {
+            game.setVoteCount(game.getVoteCount() + 1);
+            if (game.getVoteCount() >= Constants.MAX_VOTES) {
+              game.setOutcome(false);
+              game.setState(Game.State.END);
+            } else {
+              game.setCurrentLeader(getNextLeader(game));
+              game.setState(Game.State.TEAM_SELECTION);
+            }
+          }
         }
+        return game;
       }
-    }
-    gameStore.saveGame(game);
-    return game;
+    };
+    return gameStore.modifyGame(gameId, modifier);
   }
 
   /**
@@ -177,55 +205,63 @@ public class GameProcessorImpl implements GameProcessor {
   /**
    * {@inheritDoc}
    */
-  public Game issueQuestVote(Long gameId, Long voterId, Boolean succeed) {
-    Game game = gameStore.getGame(gameId);
+  public Game issueQuestVote(Long gameId, final Long voterId, final Boolean succeed) {
+    Function<Game, Game> modifier = new Function<Game, Game>() {
+      @Override
+      public Game apply(Game game) {
+        assert game.getState() == Game.State.QUEST : "Wrong state";
 
-    assert game.getState() == Game.State.QUEST : "Wrong state";
+        assert game.getCurrentTeam().contains(voterId) : "You must be on the team to vote";
 
-    if (!succeed) {
-      Player voter = playerStore.getPlayer(voterId);
-      assert Constants.BAD_ROLES.contains(voter.getRole()) :
-          "Only bad players can vote to fail a quest";
-    }
-    issueVote(game, voterId, succeed);
+        if (!succeed) {
+          Player voter = playerStore.getPlayer(voterId);
+          assert Constants.BAD_ROLES.contains(voter.getRole()) :
+              "Only bad players can vote to fail a quest";
+        }
+        issueVote(game.getQuestVotesYay(), game.getQuestVotesNay(), voterId, succeed);
 
-    // If all votes are in, check the result of the quest.
-    if (game.getVotesYay().size() + game.getVotesNay().size() ==
-        Constants.getNumPlayers(game.getPlayers().size(), game.getQuestResults().size())) {
-      boolean result = game.getVotesNay().size() < Constants.getNumFailsRequired(
-          game.getPlayers().size(), game.getQuestResults().size());
-      game.getQuestResults().add(result);
-      if (countResults(game, true) > Constants.NUM_QUESTS / 2) {
-        game.setState(Game.State.GUESS_MERLIN);
-      } else {
-        game.setOutcome(false);
-        game.setState(Game.State.END);
+        // If all votes are in, check the result of the quest.
+        if (game.getQuestVotesYay().size() + game.getQuestVotesNay().size() ==
+            Constants.getNumPlayers(game.getPlayers().size(), game.getQuestResults().size())) {
+          boolean result = game.getQuestVotesNay().size() < Constants.getNumFailsRequired(
+              game.getPlayers().size(), game.getQuestResults().size());
+          game.getQuestResults().add(result);
+          if (countResults(game, true) > Constants.NUM_QUESTS / 2) {
+            game.setState(Game.State.GUESS_MERLIN);
+          } else if (countResults(game, false) > Constants.NUM_QUESTS / 2) {
+            game.setOutcome(false);
+            game.setState(Game.State.END);
+          } else {
+            game.setCurrentLeader(getNextLeader(game));
+            game.setState(Game.State.TEAM_SELECTION);
+          }
+        }
+        return game;
       }
-    } else {
-      game.setCurrentLeader(getNextLeader(game));
-      game.setState(Game.State.TEAM_SELECTION);
-    }
-
-    gameStore.saveGame(game);
-    return game;
+    };
+    return gameStore.modifyGame(gameId, modifier);
   }
 
   /**
    * {@inheritDoc}
    */
-  public Game guessMerlin(Long gameId, Long voterId, Long guessId) {
-    Game game = gameStore.getGame(gameId);
+  public Game guessMerlin(Long gameId, final Long voterId, final Long guessId) {
+    Function<Game, Game> modifier = new Function<Game, Game>() {
+      @Override
+      public Game apply(Game game) {
+        assert game.getState() == Game.State.GUESS_MERLIN : "Wrong state";
 
-    assert game.getState() == Game.State.GUESS_MERLIN : "Wrong state";
+        Player voter = playerStore.getPlayer(voterId);
 
-    Player voter = playerStore.getPlayer(voterId);
+        assert Constants.BAD_ROLES.contains(voter.getRole()) :
+            "Only bad players can guess Merlin";
 
-    assert Constants.BAD_ROLES.contains(voter.getRole()) :
-        "Only bad players can guess Merlin";
-
-    Player guess = playerStore.getPlayer(guessId);
-    game.setOutcome(guess.getRole() != Player.Role.MERLIN);
-    gameStore.saveGame(game);
-    return game;
+        Player guess = playerStore.getPlayer(guessId);
+        game.setOutcome(guess.getRole() != Player.Role.MERLIN);
+        game.setState(Game.State.END);
+        return game;
+      }
+    };
+    return gameStore.modifyGame(gameId, modifier);
   }
 }
