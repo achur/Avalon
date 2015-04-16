@@ -37,6 +37,27 @@ public class GameProcessorImpl implements GameProcessor {
   /**
    * {@inheritDoc}
    */
+  public Game getGame(Long id) {
+    return gameStore.getGame(id);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public Player getPlayer(Long id, String email) {
+    Game game = gameStore.getGame(id);
+    for (Long playerId : game.getPlayers()) {
+      Player player = playerStore.getPlayer(playerId);
+      if (email.equals(player.getEmail())) {
+        return player;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public Game startGame(Long id) {
     Function<Game, Game> modifier = new Function<Game, Game>() {
       @Override

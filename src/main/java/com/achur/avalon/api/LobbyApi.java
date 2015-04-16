@@ -6,6 +6,7 @@ import com.achur.avalon.processors.LobbyProcessor;
 
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.appengine.api.users.User;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
@@ -34,9 +35,8 @@ public class LobbyApi extends AvalonApi {
    * Lists the currently open games.
    */
   @ApiMethod(name="lobby.list", path="lobby/list")
-  public List<Game> listGames(@Named("param") String param) {
-    System.out.println(param);
-    return ImmutableList.<Game>of();
+  public List<Game> listGames() {
+    return lobbyProcessor.listGames();
   }
 
   /**
@@ -56,10 +56,15 @@ public class LobbyApi extends AvalonApi {
     if (includeMorgana == null) {
       includeMorgana = false;
     }
-    System.out.println(includePercival ? "PERCIVAL" : "NO PERCIVAL");
-    System.out.println(includeMordred ? "MORDRED" : "NO MORDRED");
-    System.out.println(includeMorgana ? "MORGANA" : "NO MORGANA");
-    return null;
+    return lobbyProcessor.createGame(includePercival, includeMordred, includeMorgana);
+  }
+
+  /**
+   * Joins a game as the logged-in user.
+   */
+  @ApiMethod(name="lobby.join", path="lobby/join")
+  public Player joinGame(@Named("id") Long gameId, User user) {
+    return lobbyProcessor.joinGame(gameId, user.getNickname(), user.getEmail());
   }
 
 }

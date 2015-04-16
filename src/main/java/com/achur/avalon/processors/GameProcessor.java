@@ -1,6 +1,7 @@
 package com.achur.avalon.processors;
 
 import com.achur.avalon.entity.Game;
+import com.achur.avalon.entity.Player;
 
 import java.util.List;
 
@@ -8,6 +9,25 @@ import java.util.List;
  * Handles game-level logic for Avalon.
  */
 public interface GameProcessor {
+
+  /**
+   * Fetches a game by ID and returns it. Note that this object should be used
+   * for read-only purposes.
+   *
+   * @param id The ID of the game.
+   * @return The game object with the given ID.
+   */
+  public Game getGame(Long id);
+
+  /**
+   * Gets the user ID of the player with the given email address in the given game.
+   * Note that this object should be used for read-only purposes.
+   *
+   * @param id The ID of the game.
+   * @param email The email of the user to lookup.
+   * @return The player object of the user with the given email or null if such a user does'nt exist.
+   */
+  public Player getPlayer(Long id, String email);
 
   /**
    * Moves the game from the wait state to the start state.

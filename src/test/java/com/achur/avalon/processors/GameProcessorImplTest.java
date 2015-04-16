@@ -26,6 +26,7 @@ import java.util.List;
 public class GameProcessorImplTest {
 
   private static final Long GAME_ID = 123L;
+  private static final String EMAIL = "test@example.com";
 
   @Mock GameStore gameStore;
   @Mock PlayerStore playerStore;
@@ -96,6 +97,36 @@ public class GameProcessorImplTest {
       Mockito.when(playerStore.getPlayer(player.getId())).thenReturn(player);
     }
     return players;
+  }
+
+  @Test
+  public void getGameShouldCallGetGame() {
+    Game game = new Game();
+    game.setId(987L);
+    Mockito.when(gameStore.getGame(987L)).thenReturn(game);
+
+    Game response = gameProcessor.getGame(987L);
+    assertThat(response).isEqualTo(game);
+  }
+
+  @Test
+  public void getPlayerShouldFindCorrectPlayer() {
+    Game game = mockGame(Game.State.WAIT);
+    List<Player> players = mockPlayerList();
+    players.get(1).setEmail(EMAIL);
+
+    Player player = gameProcessor.getPlayer(GAME_ID, EMAIL);
+    assertThat(player.getId()).isEqualTo(1L);
+  }
+
+  @Test
+  public void getPlayerShouldReturnNullForNonexistantEmail() {
+    Game game = mockGame(Game.State.WAIT);
+    List<Player> players = mockPlayerList();
+    players.get(1).setEmail(EMAIL);
+
+    Player player = gameProcessor.getPlayer(GAME_ID, "fake@example.com");
+    assertThat(player).isNull();
   }
 
   @Test
