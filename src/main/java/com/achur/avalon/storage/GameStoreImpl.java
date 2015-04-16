@@ -4,7 +4,9 @@ import com.achur.avalon.entity.Game;
 
 import com.google.common.base.Function;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Actual GameStore implementation.
@@ -12,6 +14,7 @@ import java.util.HashMap;
 public class GameStoreImpl implements GameStore {
 
   private HashMap<Long, Game> gameStore = new HashMap<Long, Game>();
+  private static long uid = 0;
 
   /**
    * {@inheritDoc}
@@ -24,6 +27,9 @@ public class GameStoreImpl implements GameStore {
    * {@inheritDoc}
    */
   public Game saveGame(Game game) {
+    if (game.getId() == null) {
+      game.setId(uid++);
+    }
     gameStore.put(game.getId(), game);
     return game;
   }
@@ -35,5 +41,18 @@ public class GameStoreImpl implements GameStore {
     Game game = getGame(id);
     game = modifier.apply(game);
     return saveGame(game);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<Game> queryGames(Game.State state) {
+    List<Game> games = new ArrayList<>();
+    for (Game game : gameStore.values()) {
+      if (game.getState() == state) {
+        games.add(game);
+      }
+    }
+    return games;
   }
 }

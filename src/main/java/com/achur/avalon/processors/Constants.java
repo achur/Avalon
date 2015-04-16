@@ -71,6 +71,17 @@ public class Constants {
   }
 
   /**
+   * @param totalPlayers  The number of players in the game.
+   * @return The number of bad players in the game.
+   */
+  public static int getNumBadPlayers(int totalPlayers) {
+    if (totalPlayers < MIN_PLAYERS) {
+      return BAD_PLAYER_COUNTS.get(0);
+    }
+    return BAD_PLAYER_COUNTS.get(totalPlayers - MIN_PLAYERS);
+  }
+
+  /**
    * @param totalPlayers The number of players in the game.
    * @param currentQuest the number of the current quest (indexed from 0).
    * @return the number of fails required to fail the current quest.

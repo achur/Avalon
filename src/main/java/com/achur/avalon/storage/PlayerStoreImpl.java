@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class PlayerStoreImpl implements PlayerStore {
 
   private HashMap<Long, Player> playerStore = new HashMap<Long, Player>();
+  private long uid = 0;
 
   /**
    * {@inheritDoc}
@@ -22,6 +23,9 @@ public class PlayerStoreImpl implements PlayerStore {
    * {@inheritDoc}
    */
   public Player savePlayer(Player player) {
+    if (player.getId() == null) {
+      player.setId(uid++);
+    }
     playerStore.put(player.getId(), player);
     return player;
   }

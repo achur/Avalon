@@ -4,6 +4,8 @@ import com.achur.avalon.entity.Game;
 
 import com.google.common.base.Function;
 
+import java.util.List;
+
 /**
  * Handles storing and updating {@link Game} objects.
  */
@@ -34,4 +36,11 @@ public interface GameStore {
    * @return The modified game.
    */
   public Game modifyGame(Long id, Function<Game, Game> modifier);
+
+  /**
+   * Returns all the games in the given state.
+   *
+   * @param state The state of the games to query.
+   */
+  public List<Game> queryGames(Game.State state);
 }

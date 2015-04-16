@@ -21,9 +21,11 @@ public interface LobbyProcessor {
    * Joins a game in the WAIT state.
    *
    * @param id The ID of the game to join.
+   * @param name The nickname of the player in the game.
+   * @param email The email of the user controlling that player.
    * @return The player that just joined the game.
    */
-  public Player joinGame(Long id);
+  public Player joinGame(Long id, String name, String email);
 
   /**
    * Lists available games in the WAIT state.

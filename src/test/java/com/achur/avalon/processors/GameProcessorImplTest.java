@@ -33,13 +33,13 @@ public class GameProcessorImplTest {
   private GameProcessorImpl gameProcessor;
 
   @Before
+  @SuppressWarnings("unchecked")
   public void setUp() {
     gameProcessor = new GameProcessorImpl(gameStore, playerStore);
 
     // Mock the behavior of atomic actions to test the logic of those
     // actions. This isn't great, but gets the job done.
     Mockito.doAnswer(new Answer<Game>() {
-      @SuppressWarnings("unchecked")
       public Game answer(InvocationOnMock invocation) {
         Object[] args = invocation.getArguments();
         Long id = (Long) args[0];

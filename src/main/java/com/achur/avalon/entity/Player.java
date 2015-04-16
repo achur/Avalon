@@ -28,6 +28,11 @@ public class Player {
   Long id;
 
   /**
+   * The ID of the game this player is attached to.
+   */
+  Long gameId;
+
+  /**
    * The name of the player.
    */
   String name;
@@ -36,4 +41,9 @@ public class Player {
    * The role assigned to the player.
    */
   Role role;
+
+  /**
+   * The player's email. This is pulled from auth.
+   */
+  String email;
 }
