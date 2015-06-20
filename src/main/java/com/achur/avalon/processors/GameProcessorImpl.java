@@ -71,7 +71,8 @@ public class GameProcessorImpl implements GameProcessor {
   }
 
   /**
-   * Shuffle the roles in the game and randomly assign the players.
+   * Shuffle the roles in the game and randomly assign the players to roles and
+   * assign a starting leader.
    */
   private void assignPlayers(Game game) {
     ArrayList<Player.Role> roles = new ArrayList<>(game.getRoles());
@@ -82,6 +83,7 @@ public class GameProcessorImpl implements GameProcessor {
       player.setRole(roles.get(i));
       playerStore.savePlayer(player);
     }
+    game.setCurrentLeader(game.getPlayers().get(0));
   }
 
   /**
@@ -105,11 +107,11 @@ public class GameProcessorImpl implements GameProcessor {
     Function<Game, Game> modifier = new Function<Game, Game>() {
       @Override
       public Game apply(Game game) {
-        // TODO(achur): Here and elsewhere, use something better than assert.
         assert game.getState() == Game.State.TEAM_SELECTION : "Wrong state";
         assert game.getCurrentLeader() == proposerId : "Wrong proposer";
 
-        // TODO(achur): Logic to determine if the right number of players is questing.
+        assert playerIdList.size() ==
+            Constants.getNumPlayers(game.getPlayers().size(), game.getQuestResults().size());
 
         game.setCurrentTeam(playerIdList);
         clearTeamVotes(game);
