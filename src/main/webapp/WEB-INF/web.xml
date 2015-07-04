@@ -21,5 +21,9 @@
 
     <!-- Static webapp -->
     <static-files>
+      <include path="/static/**.js" />
+      <include path="/static/**.css" />
+      <include path="/static/**.html" />
+      <public-root>/static</public-root>
     </static-files>
 </web-app>

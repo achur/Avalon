@@ -2,9 +2,14 @@
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 
-<html>
+<html ng-app="avalon.application">
 
 <head>
+  <script src="static/lib/angular.min.js"></script>
+  <script src="static/lib/angular-resource.min.js"></script>
+  <script src="static/lib/angular-route.min.js"></script>
+  <script src="static/lib/angular-sanitize.min.js"></script>
+  <script src="static/app.js"></script>
 </head>
 
 <body>
@@ -27,6 +32,8 @@ Welcome to Avalon!
 <%
   }
 %>
+
+<div ng-view class="view"></div>
 
 </body>
 
