@@ -152,6 +152,25 @@
           </webResources>
         </configuration>
       </plugin>
+      <!-- TODO(achur): Either remove post-development or limit this to dev config -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>Building and symlinking static files</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>
+                ${basedir}/buildstatic.sh
+              </executable>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
