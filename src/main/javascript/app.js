@@ -5,6 +5,8 @@
 goog.provide('avalon.application.module');
 goog.provide('avalon.application.routeProvider');
 
+goog.require('avalon.createpage.CreateCtrl');
+goog.require('avalon.gamepage.GameCtrl');
 goog.require('avalon.indexpage.IndexCtrl');
 
 /**
@@ -13,12 +15,22 @@ goog.require('avalon.indexpage.IndexCtrl');
  */
 avalon.application.routeProvider = function($routeProvider) {
   $routeProvider.
-      when('/index', {
-        templateUrl: 'static/templates/index.html',
+      when('/index/', {
+        templateUrl: 'static/templates/indexpage.html',
         controller: 'IndexCtrl',
         controllerAs: 'indexCtrl'
-      })
-      .otherwise({redirectTo: '/index'});
+      }).
+      when('/create/', {
+        templateUrl: 'static/templates/createpage.html',
+        controller: 'CreateCtrl',
+        controllerAs: 'createCtrl'
+      }).
+      when('/game/:gameId/', {
+        templateUrl: 'static/templates/gamepage.html',
+        controller: 'GameCtrl',
+        controllerAs: 'gameCtrl'
+      }).
+      otherwise({redirectTo: '/index/'});
 };
 
 /**
@@ -37,3 +49,5 @@ avalon.application.module.run(['$rootScope', function($rootScope) {
 }]);
 
 avalon.application.module.controller('IndexCtrl', avalon.indexpage.IndexCtrl);
+avalon.application.module.controller('GameCtrl', avalon.gamepage.GameCtrl);
+avalon.application.module.controller('CreateCtrl', avalon.createpage.CreateCtrl);
