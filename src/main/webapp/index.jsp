@@ -10,30 +10,45 @@
   <script src="static/lib/angular-route.min.js"></script>
   <script src="static/lib/angular-sanitize.min.js"></script>
   <script src="static/app.js"></script>
-</head>
-
-<body>
-Welcome to Avalon!
 
 <%
   UserService userService = UserServiceFactory.getUserService();
   User user = userService.getCurrentUser();
+%>
+
+  <script>
+    window.avalonConfig = {
+      user: "<%= user %>"
+    };
+  </script>
+</head>
+
+<body>
+
+<%
   if (user != null) {
 %>
 
-<div class="greeting">
-  User = <%= user %>
+<div class="header">
+  <%= user %> | <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">Sign out</a>
 </div>
+
+<div ng-view class="view"></div>
 
 <%
   } else {
 %>
-<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
+
+<div class="header">
+  <a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
+</div>
+
+<div class="welcome">
+  AVALON
+</div>
 <%
   }
 %>
-
-<div ng-view class="view"></div>
 
 </body>
 
