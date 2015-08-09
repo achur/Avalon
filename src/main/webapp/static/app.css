@@ -1,3 +1,6 @@
-.topbar-username {
+.topbar-username a {
+  font-size: 14px;
+}
+.topbar-username span {
   font-size: 14px;
 }
