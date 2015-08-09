@@ -13,3 +13,7 @@ hs_err_pid*
 
 # Built files
 target/
+*.MF
+
+# Mac files
+*.DS_Store
