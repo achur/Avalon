@@ -5,9 +5,10 @@
 goog.provide('avalon.application.module');
 goog.provide('avalon.application.routeProvider');
 
-goog.require('avalon.createpage.CreateCtrl');
 goog.require('avalon.gamepage.GameCtrl');
 goog.require('avalon.indexpage.IndexCtrl');
+goog.require('avalon.lobby.module');
+goog.require('avalon.request.module');
 
 /**
  * @param {!angular.$routeProvider}
@@ -19,11 +20,6 @@ avalon.application.routeProvider = function($routeProvider) {
         templateUrl: 'static/templates/indexpage.html',
         controller: 'IndexCtrl',
         controllerAs: 'indexCtrl'
-      }).
-      when('/create/', {
-        templateUrl: 'static/templates/createpage.html',
-        controller: 'CreateCtrl',
-        controllerAs: 'createCtrl'
       }).
       when('/game/:gameId/', {
         templateUrl: 'static/templates/gamepage.html',
@@ -38,8 +34,11 @@ avalon.application.routeProvider = function($routeProvider) {
  * @type {angular.Module}
  */
 avalon.application.module = angular.module('avalon.application', [
+  avalon.lobby.module.name,
+  avalon.request.module.name,
   'ngRoute',
-  'ngSanitize'
+  'ngSanitize',
+  'ngMaterial'
 ]);
 
 avalon.application.module.config(avalon.application.routeProvider);
@@ -50,4 +49,3 @@ avalon.application.module.run(['$rootScope', function($rootScope) {
 
 avalon.application.module.controller('IndexCtrl', avalon.indexpage.IndexCtrl);
 avalon.application.module.controller('GameCtrl', avalon.gamepage.GameCtrl);
-avalon.application.module.controller('CreateCtrl', avalon.createpage.CreateCtrl);

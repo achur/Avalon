@@ -4,11 +4,13 @@ echo "Building Javascript..."
 
 java -jar compiler.jar \
   'src/main/javascript/**.js' \
+  'src/main/webapp/static/lib/goog/**.js' \
   '!**_test.js' \
   --externs externs/*.js \
   --js_output_file src/main/webapp/static/app.js \
   --output_manifest src/main/webapp/static/app.MF \
   --generate_exports \
+  --export_local_property_definitions \
   --angular_pass \
   --closure_entry_point=avalon.application.module
 

@@ -5,7 +5,7 @@
 goog.provide('avalon.gamepage.GameCtrl');
 
 /**
- * Create page controller.
+ * Game page controller.
  *
  * @param {angular.$routeParams} $routeParams The Angular route params service.
  * @constructor

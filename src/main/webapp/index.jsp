@@ -9,10 +9,15 @@
 <html ng-app="avalon.application">
 
 <head>
+  <link rel="stylesheet" type="text/css" href="static/app.css">
+  <link rel="stylesheet" type="text/css" href="static/lib/angular-material.min.css">
   <script src="static/lib/angular.min.js"></script>
   <script src="static/lib/angular-resource.min.js"></script>
   <script src="static/lib/angular-route.min.js"></script>
   <script src="static/lib/angular-sanitize.min.js"></script>
+  <script src="static/lib/angular-animate.min.js"></script>
+  <script src="static/lib/angular-aria.min.js"></script>
+  <script src="static/lib/angular-material.min.js"></script>
 
 <%
   boolean isProd =
@@ -47,29 +52,43 @@
   </script>
 </head>
 
-<body>
+<body layout="column">
+
+  <md-content>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>
+          <a class="navbar-brand" href="/#/">Avalon</a>
+        </h2>
+        <span flex></span>
+        <h2 class="topbar-username">
+<%
+  if (user != null) {
+%>
+          <span><%= user %></span>
+          <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">Sign Out</a>
+<%
+  } else {
+%>
+          <a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign In</a>
+<%
+  }
+%>
+        </h2>
+      </div>
+    </md-toolbar>
+  </md-content>
 
 <%
   if (user != null) {
 %>
-
-<div class="header">
-  <%= user %> | <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">Sign out</a>
-</div>
-
-<div ng-view class="view"></div>
-
+  <div ng-view class="view"></div>
 <%
   } else {
 %>
-
-<div class="header">
-  <a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
-</div>
-
-<div class="welcome">
-  AVALON
-</div>
+  <div class="welcome">
+    AVALON
+  </div>
 <%
   }
 %>

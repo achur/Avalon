@@ -1,3 +1,28 @@
-<div class="create">
-  Create a game page
-</div>
+<md-dialog aria-label="Create Game">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Create a game</h2>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div>
+        <md-checkbox data-ng-model="indexCtrl.mordred">Include Mordred</md-checkbox>
+      </div>
+      <div>
+        <md-checkbox data-ng-model="indexCtrl.morgana">Include Morgana</md-checkbox>
+      </div>
+      <div>
+        <md-checkbox data-ng-model="indexCtrl.percival">Include Percival</md-checkbox>
+      </div>
+    </md-dialog-content>
+    <div class="md-actions" layout="row">
+      <md-button data-ng-click="indexCtrl.hideCreateDialog()">
+        Close
+      </md-button>
+      <md-button class="md-primary" data-ng-click="indexCtrl.createGame()">
+        Create
+      </md-button>
+    </div>
+  </form>
+</md-dialog>
