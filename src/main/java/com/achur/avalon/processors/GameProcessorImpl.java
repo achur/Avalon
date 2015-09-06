@@ -38,7 +38,21 @@ public class GameProcessorImpl implements GameProcessor {
    * {@inheritDoc}
    */
   public Game getGame(Long id) {
+    System.out.println(id);
+    System.out.println(gameStore.getGame(id));
     return gameStore.getGame(id);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<Player> getPlayerList(Long id) {
+    Game game = gameStore.getGame(id);
+    List<Player> result = new ArrayList<>();
+    for (Long playerId : game.getPlayers()) {
+      result.add(playerStore.getPlayer(playerId));
+    }
+    return result;
   }
 
   /**

@@ -93,7 +93,6 @@ IndexCtrl.prototype.loadLobby = function() {
  * @export
  */
 IndexCtrl.prototype.displayCreateDialog = function() {
-  window.asdf = this;
   this.mordred = false;
   this.morgana = false;
   this.percival = false;
@@ -115,7 +114,6 @@ IndexCtrl.prototype.hideCreateDialog = function() {
  * @export
  */
 IndexCtrl.prototype.createGame = function() {
-  console.log('hear');
   this.mdDialog_.cancel();
   this.lobbyService_.create(this.mordred, this.morgana, this.percival).then(
     goog.bind(function(response) {
@@ -130,7 +128,6 @@ IndexCtrl.prototype.createGame = function() {
  * @export
  */
 IndexCtrl.prototype.openGame = function(id) {
-  console.log('opening game');
   this.location_.path('/game/' + id + '/');
 };
 

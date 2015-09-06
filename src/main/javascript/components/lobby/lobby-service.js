@@ -37,3 +37,13 @@ avalon.lobby.LobbyService.prototype.create =
     'percival': percival
   });
 };
+
+/**
+ * Join a game.
+ * @return {angular.$q.Promise}
+ */
+avalon.lobby.LobbyService.prototype.join = function(id) {
+  return this.requestService_.post('lobby/join', {
+    id: id
+  });
+};

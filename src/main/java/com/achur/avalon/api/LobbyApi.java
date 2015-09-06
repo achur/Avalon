@@ -64,6 +64,7 @@ public class LobbyApi extends AvalonApi {
    */
   @ApiMethod(name="lobby.join", path="lobby/join")
   public Player joinGame(@Named("id") Long gameId, User user) {
+    System.out.println(user);
     return lobbyProcessor.joinGame(gameId, user.getNickname(), user.getEmail());
   }
 

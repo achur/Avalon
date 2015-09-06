@@ -20,6 +20,14 @@ public interface GameProcessor {
   public Game getGame(Long id);
 
   /**
+   * Gets the list of players in a given game.
+   *
+   * @param id The ID of the game.
+   * @return The list of players in the game.
+   */
+  public List<Player> getPlayerList(Long id);
+
+  /**
    * Gets the user ID of the player with the given email address in the given game.
    * Note that this object should be used for read-only purposes.
    *

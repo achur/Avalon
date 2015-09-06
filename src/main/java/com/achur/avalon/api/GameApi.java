@@ -1,6 +1,7 @@
 package com.achur.avalon.api;
 
 import com.achur.avalon.entity.Game;
+import com.achur.avalon.entity.Player;
 import com.achur.avalon.processors.GameProcessor;
 
 import com.google.api.server.spi.config.ApiMethod;
@@ -39,6 +40,14 @@ public class GameApi extends AvalonApi {
   @ApiMethod(name="game.get", path="game/get")
   public Game getGame(@Named("id") Long gameId) {
     return gameProcessor.getGame(gameId);
+  }
+
+  /**
+   * Gets the players in a game by the game ID.
+   */
+  @ApiMethod(name="game.getPlayers", path="game/get-players")
+  public List<Player> getPlayers(@Named("id") Long gameId) {
+    return gameProcessor.getPlayerList(gameId);
   }
 
   /**
