@@ -1,6 +1,4 @@
-<%@ page import="com.google.appengine.api.users.User" %>
-<%@ page import="com.google.appengine.api.users.UserService" %>
-<%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
+<%@ page import="com.achur.avalon.api.Constants" %>
 <%@ page import="com.google.appengine.api.utils.SystemProperty" %>
 <%@ page import="com.google.common.base.Charsets" %>
 <%@ page import="com.google.common.io.Files" %>
@@ -19,11 +17,23 @@
   <script src="static/lib/angular-aria.min.js"></script>
   <script src="static/lib/angular-material.min.js"></script>
 
+  <script>
+    window.config = {};
+    window.config.AUTH = {
+      client_id: "<%= Constants.CLIENT_ID %>",
+      scopes: ["<%= Constants.EMAIL_SCOPE %>", "<%= Constants.PROFILE_SCOPE %>"],
+      immediate: false
+    };
+  </script>
+
 <%
   boolean isProd =
       SystemProperty.environment.value() == SystemProperty.Environment.Value.Production;
   if (isProd) {
 %>
+  <script>
+
+  </script>
 
   <script src="static/app.js"></script>
 
@@ -41,15 +51,9 @@
     }
   }
 
-  UserService userService = UserServiceFactory.getUserService();
-  User user = userService.getCurrentUser();
 %>
+  <script src="https://apis.google.com/js/client.js?onload=init"></script>
 
-  <script>
-    window.avalonConfig = {
-      user: "<%= user %>"
-    };
-  </script>
 </head>
 
 <body layout="column">
@@ -62,36 +66,14 @@
         </h2>
         <span flex></span>
         <h2 class="topbar-username">
-<%
-  if (user != null) {
-%>
-          <span><%= user %></span>
-          <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">Sign Out</a>
-<%
-  } else {
-%>
-          <a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign In</a>
-<%
-  }
-%>
+          Username or something
         </h2>
       </div>
     </md-toolbar>
   </md-content>
 
-<%
-  if (user != null) {
-%>
   <div ng-view class="view"></div>
-<%
-  } else {
-%>
-  <div class="welcome">
-    AVALON
-  </div>
-<%
-  }
-%>
+
 
 </body>
 

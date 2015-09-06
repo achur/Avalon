@@ -43,9 +43,18 @@ avalon.application.module = angular.module('avalon.application', [
 
 avalon.application.module.config(avalon.application.routeProvider);
 
-avalon.application.module.run(['$rootScope', function($rootScope) {
-  $rootScope['CONFIG'] = {};
-}]);
-
 avalon.application.module.controller('IndexCtrl', avalon.indexpage.IndexCtrl);
 avalon.application.module.controller('GameCtrl', avalon.gamepage.GameCtrl);
+
+window.init = function() {
+
+  gapi.client.load('avalon', 'v1', null, window.config.ROOT).then(function() {
+    console.log('loaded');
+    return gapi.auth.authorize(window.config.AUTH);
+  }).then(function() {
+    avalon.application.module.run(['$rootScope', function($rootScope) {
+      $rootScope['CONFIG'] = {};
+    }]);
+  });
+
+};
