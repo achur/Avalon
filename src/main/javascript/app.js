@@ -4,11 +4,19 @@
 
 goog.provide('avalon.application.module');
 goog.provide('avalon.application.routeProvider');
+goog.provide('avalon.config');
 
 goog.require('avalon.gamepage.GameCtrl');
 goog.require('avalon.indexpage.IndexCtrl');
 goog.require('avalon.lobby.module');
 goog.require('avalon.request.module');
+goog.require('avalon.topbar.module');
+
+/**
+ * Make global config available as an import.
+ */
+avalon.config = window.config;
+avalon.config['user'] = {};
 
 /**
  * @param {!angular.$routeProvider}
@@ -36,6 +44,7 @@ avalon.application.routeProvider = function($routeProvider) {
 avalon.application.module = angular.module('avalon.application', [
   avalon.lobby.module.name,
   avalon.request.module.name,
+  avalon.topbar.module.name,
   'ngRoute',
   'ngSanitize',
   'ngMaterial'
@@ -46,15 +55,24 @@ avalon.application.module.config(avalon.application.routeProvider);
 avalon.application.module.controller('IndexCtrl', avalon.indexpage.IndexCtrl);
 avalon.application.module.controller('GameCtrl', avalon.gamepage.GameCtrl);
 
-window.init = function() {
+var rootScope;
+avalon.application.module.run(['$rootScope', function($rootScope) {
+  rootScope = $rootScope;
+  rootScope.config = avalon.config;
+}]);
 
+window.init = function() {
   gapi.client.load('avalon', 'v1', null, window.config.ROOT).then(function() {
-    console.log('loaded');
     return gapi.auth.authorize(window.config.AUTH);
   }).then(function() {
-    avalon.application.module.run(['$rootScope', function($rootScope) {
-      $rootScope['CONFIG'] = {};
-    }]);
+    return gapi.client.load('oauth2', 'v2');
+  })
+  .then(function() {
+    return gapi.client.oauth2.userinfo.get();
+  }).then(function(response) {
+    // Update config, then manually redraw.
+    avalon.config['user'] = response.result;
+    rootScope.$apply();
   });
 
 };

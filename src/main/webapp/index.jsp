@@ -21,9 +21,10 @@
     window.config = {};
     window.config.AUTH = {
       client_id: "<%= Constants.CLIENT_ID %>",
-      scopes: ["<%= Constants.EMAIL_SCOPE %>", "<%= Constants.PROFILE_SCOPE %>"],
+      scope: ["<%= Constants.EMAIL_SCOPE %>", "<%= Constants.PROFILE_SCOPE %>"],
       immediate: false
     };
+    window.config.ROOT = "/_ah/api";
   </script>
 
 <%
@@ -31,9 +32,6 @@
       SystemProperty.environment.value() == SystemProperty.Environment.Value.Production;
   if (isProd) {
 %>
-  <script>
-
-  </script>
 
   <script src="static/app.js"></script>
 
@@ -57,24 +55,8 @@
 </head>
 
 <body layout="column">
-
-  <md-content>
-    <md-toolbar>
-      <div class="md-toolbar-tools">
-        <h2>
-          <a class="navbar-brand" href="/#/">Avalon</a>
-        </h2>
-        <span flex></span>
-        <h2 class="topbar-username">
-          Username or something
-        </h2>
-      </div>
-    </md-toolbar>
-  </md-content>
-
+  <div data-avalon-topbar></div>
   <div ng-view class="view"></div>
-
-
 </body>
 
 </html>

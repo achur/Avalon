@@ -1,16 +1,19 @@
 <md-content class="index">
-  <md-button data-ng-click="indexCtrl.loadLobby()">Load games</md-button>
-  <md-button data-ng-click="indexCtrl.displayCreateDialog()">Create game</md-button>
-  <md-list>
-    <md-list-item data-ng-repeat="game in indexCtrl.gameList">
-      <div data-ng-click="indexCtrl.openGame(game.id)" class="md-list-item-text">
-        <h3>Game {{game.id}}</h3>
-        {{game}}
-        <p class="lobby-row-roles">
-          Roles: <span data-ng-repeat="role in game.roles">{{role}} </span>
-        </p>
-        <div data-lobby-join data-id="game.id"></div>
-      </div>
-    </md-list-item>
-  </md-list>
+  <span data-ng-if="config.user.name">
+    <md-button data-ng-click="indexCtrl.loadLobby()">Load games</md-button>
+    <md-button data-ng-click="indexCtrl.displayCreateDialog()">Create game</md-button>
+    <md-list>
+      <md-list-item data-ng-repeat="game in indexCtrl.gameList">
+        <div data-ng-click="indexCtrl.openGame(game.id)" class="md-list-item-text">
+          <h3>Game {{game.id}}</h3>
+          {{game}}
+          <p class="lobby-row-roles">
+            Roles: <span data-ng-repeat="role in game.roles">{{role}} </span>
+          </p>
+          <div data-lobby-join data-id="game.id"></div>
+        </div>
+      </md-list-item>
+    </md-list>
+  </span>
+  <div data-user-loading></div>
 </md-content>

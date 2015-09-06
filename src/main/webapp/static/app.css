@@ -1,6 +1,32 @@
 .topbar-username a {
   font-size: 14px;
 }
-.topbar-username span {
+.topbar-username h2 {
   font-size: 14px;
+}
+.loading {
+  text-align: center;
+  height: 100%;
+}
+.loading .inner {
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+  overflow: hidden;
+}
+.loading .inner .progress {
+  padding-left: 18px;
+  margin-bottom: 10px;
+}
+.topbar-username .profile-picture {
+  height: 32px;
+  width: 32px;
+  display: inline-block:
+  overflow: hidden;
+}
+.topbar-username .profile-picture img {
+  height: 32px;
+  width: 32px;
 }
